@@ -9,7 +9,6 @@ mod imagemap;
 mod allcolors;
 
 use allcolors::AllColors;
-use std::fs::File;
 
 struct Program {
     pub allcolors: AllColors,
@@ -36,10 +35,10 @@ impl display::DisplayProgram for Program {
                 for i in 0..self.allcolors.width {
                     for j in 0..self.allcolors.height {
                         let &p = &v[i][j];
-                        im.put_pixel(i as u32, j as u32, image::Rgb([p.0, p.1, p.2]));
+                        im.put_pixel(i as u32, (self.allcolors.height - j - 1) as u32, image::Rgb([p.0, p.1, p.2]));
                     }
                 }
-                im.save("finished.png");
+                im.save("finished.png").unwrap();
             }
         }
         self.allcolors.to_image()
@@ -48,8 +47,6 @@ impl display::DisplayProgram for Program {
 
 fn main() {
     let mut program = Program::new(8, 1.5);
-    let sx = (program.allcolors.width / 3) as usize;
-    let sy = (program.allcolors.height / 3) as usize;
     program.allcolors.seed(0, 0, (0, 0, 0));
     display::run(program);
 }

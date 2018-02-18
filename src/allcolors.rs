@@ -55,16 +55,19 @@ impl AllColors {
                 let cx = x as i32 + i;
                 let cy = y as i32 + j;
                 if let Some((nr, ng, nb)) = self.image.get_color(cx, cy) {
-                    r += nr as f64;//(nr as f64).powf(2.);
-                    g += ng as f64;//(ng as f64).powf(2.);
-                    b += nb as f64;//(nb as f64).powf(2.);
+                    /*r += nr as f64;
+                    g += ng as f64;
+                    b += nb as f64;*/
+                    r += (nr as f64).powf(2.);
+                    g += (ng as f64).powf(2.);
+                    b += (nb as f64).powf(2.);
                     num += 1.;
                 }
             }
         }
 
-        //((r/num).sqrt() as u8, (g/num).sqrt() as u8, (b/num).sqrt() as u8
-        ((r/num) as u8, (g/num) as u8, (b/num) as u8)
+        ((r/num).sqrt() as u8, (g/num).sqrt() as u8, (b/num).sqrt() as u8)
+        //((r/num) as u8, (g/num) as u8, (b/num) as u8)
     }
 
     pub fn to_image(&self) -> Vec<Vec<(u8, u8, u8)>> {
