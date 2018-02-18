@@ -1,0 +1,9 @@
+[package]
+name = "allcolors-rs"
+version = "0.1.0"
+authors = ["Jan Dohl <jan@legxaro.de>"]
+
+[dependencies]
+glium="*"
+image="*"
+rand="*"
