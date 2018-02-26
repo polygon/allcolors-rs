@@ -7,4 +7,5 @@ authors = ["Jan Dohl <jan@legxaro.de>", "Astro <astro@spaceboyz.net>"]
 glium="*"
 image="*"
 rand="*"
+time="*"
 rayon="1.0.0"
