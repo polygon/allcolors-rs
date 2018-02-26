@@ -75,18 +75,16 @@ impl Image {
     }
 
     pub fn to_image(&self, default: (u8, u8, u8)) -> Vec<Vec<(u8, u8, u8)>> {
-        let mut out = vec![vec![default; self.height]; self.width];
-        for i in 0..self.width {
-            for j in 0..self.height {
+        (0..self.width).map(|i| {
+            (0..self.height).map(|j| {
                 match self.data[i][j] {
-                    Pixel::Placed (r, g, b) => {
-                        out[i][j] = (r, g, b);
-                    }
-                    _ => ()
+                    Pixel::Placed (r, g, b) =>
+                        (r, g, b),
+                    _ =>
+                        default
                 }
-            }
-        }
-        out
+            }).collect()
+        }).collect()
     }
 
     pub fn num_open(&self) -> usize {
