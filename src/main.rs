@@ -2,6 +2,7 @@
 extern crate glium;
 extern crate image;
 extern crate rand;
+extern crate rayon;
 
 mod display;
 mod colortree;
