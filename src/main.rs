@@ -2,13 +2,21 @@
 extern crate glium;
 extern crate image;
 extern crate rand;
+extern crate time;
+extern crate rayon;
 
 mod display;
 mod colortree;
 mod imagemap;
 mod allcolors;
 
+use time::now_utc;
 use allcolors::AllColors;
+
+fn now_us() -> u64 {
+    let now = now_utc().to_timespec();
+    now.sec as u64 * 1000000 + now.nsec as u64 / 1000
+}
 
 struct Program {
     pub allcolors: AllColors,
@@ -24,9 +32,13 @@ impl Program {
 impl display::DisplayProgram for Program {
     fn update(&mut self) -> Vec<Vec<(u8, u8, u8)>> {
         if !self.allcolors.done() {
-            for _ in 0..self.allcolors.image.num_open() {
+            let t1 = now_us();
+            let num_open = self.allcolors.image.num_open();
+            for _ in 0..num_open {
                 self.allcolors.iterate();
             }
+            let t2 = now_us();
+            println!("iterated {} allcolors in {} us", num_open, t2 - t1);
         } else {
             if !self.saved {
                 self.saved = true;
@@ -41,7 +53,11 @@ impl display::DisplayProgram for Program {
                 im.save("finished.png").unwrap();
             }
         }
-        self.allcolors.to_image()
+        let t1 = now_us();
+        let image = self.allcolors.to_image();
+        let t2 = now_us();
+        println!("generated image in {} us", t2 - t1);
+        image
     }
 }
 

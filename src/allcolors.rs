@@ -1,6 +1,7 @@
 use colortree;
 use imagemap;
 use colortree::Point;
+use rayon::prelude::*;
 
 #[derive(Debug)]
 pub struct AllColors {
@@ -40,7 +41,7 @@ impl AllColors {
             } else {
                 println!("Warning: colortree is out of colors, check done");
             }
-        } else { () }
+        }
     }
 
     pub fn done(&self) -> bool {
@@ -48,38 +49,40 @@ impl AllColors {
     }
 
     fn average(&self, x: usize, y: usize) -> (u8, u8, u8) {
-        let (mut r, mut g, mut b) = (0.0, 0.0, 0.0);
-        let mut num:f64 = 0.;
-        for i in -1..2 {
-            for j in -1..2 {
-                let cx = x as i32 + i;
-                let cy = y as i32 + j;
-                if let Some((nr, ng, nb)) = self.image.get_color(cx, cy) {
-                    /*r += nr as f64;
-                    g += ng as f64;
-                    b += nb as f64;*/
-                    r += (nr as f64).powf(2.);
-                    g += (ng as f64).powf(2.);
-                    b += (nb as f64).powf(2.);
-                    num += 1.;
-                }
-            }
-        }
+        let (n, (r, g, b)) =
+            (-1..2).into_par_iter().flat_map(|i| {
+                (-1..2).into_par_iter().filter_map(move |j| {
+                    let cx = x as i32 + i;
+                    let cy = y as i32 + j;
+                    if let Some((nr, ng, nb)) = self.image.get_color(cx, cy) {
+                        let r = (nr as f64).powf(2.);
+                        let g = (ng as f64).powf(2.);
+                        let b = (nb as f64).powf(2.);
+                        Some((1usize, (r, g, b)))
+                    } else {
+                        None
+                    }
+                })
+            })
+            .reduce(|| (0usize, (0f64, 0f64, 0f64)),
+                  |(n, (r, g, b)), (n1, (r1, g1, b1))| (n + n1, (r + r1, g + g1, b + b1))
+            );
 
+        let num = n as f64;
         ((r/num).sqrt() as u8, (g/num).sqrt() as u8, (b/num).sqrt() as u8)
-        //((r/num) as u8, (g/num) as u8, (b/num) as u8)
     }
 
     pub fn to_image(&self) -> Vec<Vec<(u8, u8, u8)>> {
-        let mut v = self.image.to_image((0, 0, 0));
         let fac: f64 = 256. / 2f64.powf(self.bits as f64);
-        for mut x in 0..self.width {
-            for mut y in 0..self.height {
-                v[x][y] = ((v[x][y].0 as f64 * fac) as u8,
-                           (v[x][y].1 as f64 * fac) as u8,
-                           (v[x][y].2 as f64 * fac) as u8);
-            }
-        }
-        v
+        self.image.to_image((0, 0, 0))
+            .par_iter()
+            .map(|vs| {
+                vs.into_iter()
+                    .map(|v| {
+                        ((v.0 as f64 * fac) as u8,
+                         (v.1 as f64 * fac) as u8,
+                         (v.2 as f64 * fac) as u8)
+                    }).collect()
+            }).collect()
     }
 }

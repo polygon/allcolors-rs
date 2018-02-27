@@ -1,9 +1,11 @@
 [package]
 name = "allcolors-rs"
 version = "0.1.0"
-authors = ["Jan Dohl <jan@legxaro.de>"]
+authors = ["Jan Dohl <jan@legxaro.de>", "Astro <astro@spaceboyz.net>"]
 
 [dependencies]
 glium="*"
 image="*"
 rand="*"
+time="*"
+rayon="1.0.0"
