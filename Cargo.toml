@@ -4,6 +4,6 @@ version = "0.1.0"
 authors = ["Jan Dohl <jan@legxaro.de>"]
 
 [dependencies]
-glium="*"
-image="*"
-rand="*"
+glium="0.29.*"
+image="0.23.*"
+rand="0.8.*"

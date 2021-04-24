@@ -6,8 +6,14 @@ pkgs.stdenv.mkDerivation {
   nativeBuildInputs = with pkgs; [
     rustc
     cargo
+    xorg.libX11
+    xorg.libXcursor
+    xorg.libXrandr
+    xorg.libXi
+    xorg.libxcb
   ];
 
-  RUST_BACKTRACE = 1;
+  RUST_BACKTRACE="full";
+  LD_LIBRARY_PATH = with pkgs.xlibs; "${libX11}/lib:${libXcursor}/lib:${libXrandr}/lib:${libXext}/lib:${pkgs.xorg.libxcb}/lib";
 }
 

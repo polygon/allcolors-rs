@@ -73,8 +73,8 @@ impl AllColors {
     pub fn to_image(&self) -> Vec<Vec<(u8, u8, u8)>> {
         let mut v = self.image.to_image((0, 0, 0));
         let fac: f64 = 256. / 2f64.powf(self.bits as f64);
-        for mut x in 0..self.width {
-            for mut y in 0..self.height {
+        for x in 0..self.width {
+            for y in 0..self.height {
                 v[x][y] = ((v[x][y].0 as f64 * fac) as u8,
                            (v[x][y].1 as f64 * fac) as u8,
                            (v[x][y].2 as f64 * fac) as u8);

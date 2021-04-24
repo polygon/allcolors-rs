@@ -65,7 +65,7 @@ impl Image {
         }
 
         let mut rng = rand::thread_rng();
-        let i:usize = rng.gen_range(0, self.open.len());
+        let i:usize = rng.gen_range(0..self.open.len());
         let (x, y) = self.open.swap_remove(i);
         Some((x, y))
     }
