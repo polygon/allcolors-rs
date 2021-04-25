@@ -1,5 +1,6 @@
 { sources ? import ./nix/sources.nix
 , pkgs ? import sources.nixpkgs {}
+, nixgl ? import sources.nixGL {}
 }:
 pkgs.stdenv.mkDerivation {
   name = "allcolors-shell";
@@ -11,6 +12,7 @@ pkgs.stdenv.mkDerivation {
     xorg.libXrandr
     xorg.libXi
     xorg.libxcb
+    nixgl.nixGLDefault
   ];
 
   RUST_BACKTRACE="full";
