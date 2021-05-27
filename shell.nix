@@ -1,21 +1,8 @@
-{ sources ? import ./nix/sources.nix
-, pkgs ? import sources.nixpkgs {}
-, nixgl ? import sources.nixGL {}
-}:
-pkgs.stdenv.mkDerivation {
-  name = "allcolors-shell";
-  nativeBuildInputs = with pkgs; [
-    rustc
-    cargo
-    xorg.libX11
-    xorg.libXcursor
-    xorg.libXrandr
-    xorg.libXi
-    xorg.libxcb
-    nixgl.nixGLDefault
-  ];
-
-  RUST_BACKTRACE="full";
-  LD_LIBRARY_PATH = with pkgs.xlibs; "${libX11}/lib:${libXcursor}/lib:${libXrandr}/lib:${libXext}/lib:${pkgs.xorg.libxcb}/lib";
-}
+(import (
+  fetchTarball {
+    url = "https://github.com/edolstra/flake-compat/archive/99f1c2157fba4bfe6211a321fd0ee43199025dbf.tar.gz";
+    sha256 = "0x2jn3vrawwv9xp15674wjz9pixwjyj3j771izayl962zziivbx2"; }
+) {
+  src =  ./.;
+}).shellNix
 
